@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شبیه‌ساز استخراج</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #ffeaa7;
+            font-size: 14px;
+        }
+        .income-box {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .income-box h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        .amount {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .balance-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border: 2px solid #e9ecef;
+        }
+        .balance-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .balance-amount {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-income {
+            background: #007bff;
+            color: white;
+        }
+        .btn-income:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .withdraw-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        .withdraw-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+        .min-amount {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn-withdraw {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-withdraw:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        #message {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="warning">
+            ⚠️ این یک شبیه‌ساز آموزشی است - هیچ پرداخت واقعی انجام نمی‌شود
+        </div>
+
+        <div class="income-box">
+            <h2>سایت شبیه‌ساز استخراج</h2>
+            <div class="amount">۱۰۰,۰۰۰ تومان</div>
+            <p>درآمد روزانه</p>
+        </div>
+
+        <div class="balance-section">
+            <div class="balance-row">
+                <span>موجودی شما:</span>
+                <span id="balance" class="balance-amount">۰ تومان</span>
+            </div>
+            
+            <button class="btn btn-income" onclick="addIncome()">
+                💰 دریافت درآمد روزانه
+            </button>
+        </div>
+
+        <div class="withdraw-section">
+            <h3>درخواست برداشت</h3>
+            <div class="min-amount">حداقل برداشت: ۴۰۰,۰۰۰ تومان</div>
+            
+            <input type="text" id="card" placeholder="شماره کارت (۱۶ رقمی)" maxlength="16" inputmode="numeric">
+            <input type="number" id="amount" placeholder="مبلغ برداشت" min="400000">
+            
+            <button class="btn btn-withdraw" onclick="withdraw()">
+                🏦 درخواست برداشت
+            </button>
+            
+            <div id="message">
+                ✅ درخواست شما ثبت شد. تا ۲۴ ساعت آینده پرداخت انجام می‌شود.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let balance = 0;
+
+        function addIncome() {
+            balance += 100000;
+            updateBalance();
+            alert('۱۰۰,۰۰۰ تومان به موجودی شما اضافه شد! ✅');
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = 
+                balance.toLocaleString('fa-IR') + ' تومان';
+        }
+
+        function withdraw() {
+            const card = document.getElementById('card').value;
+            const amount = parseInt(document.getElementById('amount').value);
+            
+            // اعتبارسنجی
+            if (!card || card.length !== 16) {
+                alert('❌ لطفاً شماره کارت ۱۶ رقمی وارد کنید');
+                return;
+            }
+            
+            if (amount < 400000) {
+                alert('❌ حداقل مبلغ برداشت ۴۰۰,۰۰۰ تومان است');
+                return;
+            }
+            
+            if (amount > balance) {
+                alert('❌ موجودی شما کافی نیست');
+                return;
+            }
+            
+            // کسر از موجودی
+            balance -= amount;
+            updateBalance();
+            
+            // نمایش پیام موفقیت
+            const message = document.getElementById('message');
+            message.style.display = 'block';
+            
+            // پاک کردن فرم
+            document.getElementById('card').value = '';
+            document.getElementById('amount').value = '';
+            
+            // مخفی کردن پیام بعد از ۵ ثانیه
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 5000);
+        }
+
+        // مقدار اولیه
+        updateBalance();
+    </script>
+</body>
+</html>
